@@ -7,34 +7,56 @@
     <title>Horario de clases | LCR</title>
     <!-- CSS & JS -->
     <link rel="stylesheet" href="style.css" />
-    <script src="code.js"></script>
   </head>
   <body>
     <header>Agenda de uso del Laboratorio Central de Redes (LCR)</header>
 
-    <div class="controls title">Busqueda personalizada</div>
+    <h1>Busqueda personalizada</h1>
 
-    <div class="schedule">Horario</div>
+    <div id="search">
+      <label for="search-Asignatura">Asignatura: </label>
+      <input id="search-Asignatura" placeholder="<Vacío>" />
 
-    <div class="title">Informacion de la clase seleccionada</div>
+      <label for="search-Grupo">Grupo: </label>
+      <input
+        id="search-Grupo"
+        type="number"
+        min="1"
+        max="99"
+        placeholder="<Vacío>"
+      />
 
-    <div class="info">
-      <div>
-        <p>Campo 1:</p>
-        <p>Campo 2:</p>
-        <p>Campo 3:</p>
-        <p>Campo 4:</p>
-        <p>Campo 5:</p>
-      </div>
-      <div>
-        <p>Valor 1 esta modificado</p>
-        <p>Valor 2 esta modificado, por eso sale azul</p>
-        <p>Valor 3</p>
-      </div>
+      <label for="search-Maestro">Maestro: </label>
+      <input id="search-Maestro" placeholder="<Vacío>" />
     </div>
 
-    <div>Este es un nuevo elemento, por eso esta marcado como verde</div>
+    <table id="schedule"></table>
+
+    <div id="info" style="display: none">
+      <div class="subtitle">Información de la clase seleccionada</div>
+
+      <div id="admin">
+        <label for="admin-Asignatura">Asignatura: </label>
+        <select id="admin-Asignatura" placeholder="<Vacío>"></select>
+
+        <label for="admin-Grupo">Grupo: </label>
+        <input
+          id="admin-Grupo"
+          type="number"
+          min="1"
+          max="99"
+          placeholder="<Vacío>"
+        />
+
+        <label for="admin-Maestro">Maestro: </label>
+        <select id="admin-Maestro" placeholder="<Vacío>"></select>
+      </div>
+
+      <button id="Actualizar">Actualizar</button>
+    </div>
 
     <footer class="as-header">pie de pagina</footer>
+
+    <script src="code.js"></script>
   </body>
 </html>

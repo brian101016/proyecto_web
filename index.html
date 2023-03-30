@@ -11,24 +11,32 @@
   <body>
     <header>Agenda de uso del Laboratorio Central de Redes (LCR)</header>
 
-    <h1>Busqueda personalizada</h1>
+    <h1>
+      Busqueda personalizada
+      <div id="search">
+        <div>
+          <label for="search-Asignatura">Asignatura: </label>
+          <input disabled id="search-Asignatura" placeholder="<Vacío>" />
+        </div>
 
-    <div id="search">
-      <label for="search-Asignatura">Asignatura: </label>
-      <input id="search-Asignatura" placeholder="<Vacío>" />
+        <div>
+          <label for="search-Grupo">Grupo: </label>
+          <input
+            disabled
+            id="search-Grupo"
+            type="number"
+            min="0"
+            max="99"
+            placeholder="<Vacío>"
+          />
+        </div>
 
-      <label for="search-Grupo">Grupo: </label>
-      <input
-        id="search-Grupo"
-        type="number"
-        min="1"
-        max="99"
-        placeholder="<Vacío>"
-      />
-
-      <label for="search-Maestro">Maestro: </label>
-      <input id="search-Maestro" placeholder="<Vacío>" />
-    </div>
+        <div>
+          <label for="search-Maestro">Maestro: </label>
+          <input disabled id="search-Maestro" placeholder="<Vacío>" />
+        </div>
+      </div>
+    </h1>
 
     <table id="schedule"></table>
 
@@ -43,7 +51,7 @@
         <input
           id="admin-Grupo"
           type="number"
-          min="1"
+          min="0"
           max="99"
           placeholder="<Vacío>"
         />
@@ -52,10 +60,14 @@
         <select id="admin-Maestro" placeholder="<Vacío>"></select>
       </div>
 
-      <button id="Actualizar">Actualizar</button>
+      <div id="edit-tools">
+        <button id="Actualizar">Actualizar</button>
+        <ol id="edit-Asignatura"></ol>
+        <ol id="edit-Maestro"></ol>
+      </div>
     </div>
 
-    <footer class="as-header">pie de pagina</footer>
+    <footer class="as-header"></footer>
 
     <script src="code.js"></script>
   </body>

@@ -24,6 +24,7 @@
 /* ######################### VARIABLES */
 html {
   --color-primary: #005c3e;
+  /* #562e2e */
   --color-secondary: #cccccc;
 
   --color-white: #e9e9e9;
@@ -64,12 +65,12 @@ table {
 /* ######################### RESET DOCUMENT */
 html,
 body {
-  min-width: 100vw;
+  /* min-width: 100vw;
   min-height: 100vh;
   height: 100%;
   width: 100vw;
-  max-width: 100vw;
-  overflow-x: hidden;
+  max-width: 100vw; */
+  /* overflow-x: hidden; */
 
   scroll-behavior: smooth;
   color: var(--color-black);
@@ -140,13 +141,14 @@ h2,
 
 /* ################################################## SEARCH CONTROLS ################################################## */
 #search {
-  background-color: var(--color-secondary);
-  font-size: 1.75rem;
+  /* background-color: var(--color-secondary); */
+  /* font-size: 1.75rem; */
   margin: 0.75rem 3rem;
   padding: 1.25rem 0.75rem;
   border-radius: 1rem;
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 }
 
 /* ################################################## SCHEDULE TABLE ################################################## */
@@ -205,6 +207,12 @@ h2,
   outline: var(--color-black) 3px auto;
 }
 
+/* ######################### SELECCIONAR UNA CELDA */
+.selected-cell {
+  background-color: var(--color-table-hover-cell);
+  outline: rgb(200, 0, 0) 3px auto;
+}
+
 /* ################################################## INFO ################################################## */
 
 /* ######################### CONTAINER */
@@ -221,20 +229,45 @@ h2,
   margin: 0.75rem;
 }
 
-/* ######################### INPUTS & SELECT */
+/* ######################### EDIT TOOLS */
+#edit-tools {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
+/* ######################### EDIT LIST */
+ol {
+  max-height: 200px;
+  overflow: auto;
+  border: 2px solid var(--color-black);
+  border-radius: 10px 0 0 10px;
+  padding: 1rem 2rem;
+  background-color: var(--color-table-bg-column);
+}
+
+/* ################################################## INPUTS & SELECT ################################################## */
 input,
 .as-input,
 select,
 .as-select {
+  min-width: 12em;
   margin: 0px 0.5rem;
-  width: 25%;
+  padding: 0.25rem 1rem;
+  border-radius: 2.5rem;
+  border: var(--color-secondary) 2px inset;
+}
+
+button {
+  padding: 0.5em 1em;
+  margin: 0.5rem;
 }
 
 /* ######################### BOTON DE ACTUALIZAR */
 #Actualizar {
-  width: 10rem;
-  height: 3rem;
-  margin-left: 0.75rem;
+  padding: 1em 2em;
 }
 
 /* ################################################## FOOTER ################################################## */

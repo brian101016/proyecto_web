@@ -238,6 +238,16 @@ document.addEventListener("DOMContentLoaded", () => {
     _input.search[field].oninput = buscar;
   }
 
+  // El botón de limpiar búsqueda nada más lo ocupamos una vez
+  const Limpiar = document.getElementById("search-Limpiar");
+  Limpiar.onclick = () => {
+    // Recorremos los inputs de búsqueda, borrando sus valores
+    for (const field in _input.search) _input.search[field].value = "";
+
+    // Actualizamos el buscador una última vez, para deseleccionar todo.
+    buscar();
+  };
+
   // ========================= BOTÓN DE ACTUALIZAR DESDE EL ADMIN =========================
   // El botón de actualizar nada más lo ocupamos una vez, no tiene caso hacerlo variable global
   const obj_actualizar = document.getElementById("Actualizar");
@@ -878,6 +888,5 @@ function popup(desc, listData, inputData, buttonDesc, callback) {
 
   1.- FORMA DE ACCEDER AL ADMIN
   3.- DESDE EL ADMIN, SUBIR LOS CAMBIOS AL SERVIDOR (PROBAR SI FUNCIONA)
-  4.- BOTON DE LIMPIAR BUSQUEDA
 
 */

@@ -307,6 +307,8 @@ document.addEventListener("DOMContentLoaded", () => {
       toggle.textContent = "Admin desactivado. Pulse para activar";
       obj_info.classList.add("hidden"); // Hacemos que los controles sean invisibles
     }
+
+    refresh(); // Refrescamos para que las celdas se combinen o separen
   };
 
   // Con todas las variables establecidas, ahora si comenzamos con el proceso de verdad
@@ -457,7 +459,7 @@ async function getHorario() {
                   Grupo: profe,
                   Maestro: grupo,
                   Horario: `${encabezado} a las ${hour + 7}:00 - ${
-                    hour + 7
+                    hour + 7 + cell.rowSpan - 1
                   }:55`,
                 },
                 undefined,
@@ -564,6 +566,7 @@ function refresh() {
   for (let hour = 0; hour < _horario.dias.Lunes.length; hour++) {
     // para cada uno de los dias disponibles
     for (const day in _horario.dias) {
+      // ========================= METER INFORMACIÓN BASE =========================
       /**
        * @type {Clase} Datos que deberían ir en la celda, para acceder a ellos más rápido (son todos números)
        */
@@ -577,8 +580,60 @@ function refresh() {
       const profe = _horario.campos.Maestro[data.Maestro] || "";
       const grupo = data.Grupo > 0 ? data.Grupo : "";
 
+      // Guardamos la celda actual para modificarse cosas, y de paso le reestablecemos otras
+      const cell = _cells[numeroCelda];
+      cell.rowSpan = 1; // Esto es para que, si estaba combinada, se descombine...
+      cell.classList.remove("hidden"); // ...y esto también
+
       // Anotamos como texto dentro de la celda actual, en caso de que todo esté vacío ("") pues no va a mostrar nada
-      _cells[numeroCelda].textContent = `${materia} ${grupo} ${profe}`;
+      cell.textContent = `${materia} ${grupo} ${profe}`;
+
+      // ========================= COMBINAMOS CELDAS IGUALES EN VERTICAL =========================
+      /**
+       * Verificamos si una clase es de dos horas o más, para esto usaremos la propiedad 'rowspan', que nos permite
+       * combinar celdas en vertical. Técnicamente, lo que hace es que la celda abarque dos o más espacios, y si nosotros
+       * le ponemos a la celda que sigue un 'display: none;', la "eliminamos" y se "combinan".
+       *
+       * Esto de mostrar las horas combinadas únicamente se va a ver cuando el usuario no sea admin, porque el admin
+       * debe ser capaz de modificar las horas individualmente.
+       *
+       * Para combinar celdas necesitamos verificar la clase de arriba (excepto si es la primera del día) y si su
+       * información es igual a la de la clase actual (si es el mimso 'textContent' es la misma info).
+       */
+      if (!_admin && materia) {
+        /**
+         * @type {HTMLTableCellElement}
+         * Como estamos guardando las celdas en un arreglo, y sabemos que el arreglo se acomoda en esta forma:
+         * [1]  [2]  [3]  [4]  [5]
+         * [6]  [7]  [8]  [9]  [10]
+         * ...
+         * [66] [67] [68] [69] [70]
+         *
+         * Si queremos obtener la celda que está arriba de nosotros (por ejemplo, estamos en la #10 y queremos obtener
+         * la #5), podemos hacer _cells[numeroCelda - 5], porque esto nos da [10 - 5] = 5
+         */
+        let prevCell = null;
+        let count = 1; // Cuántas horas retocedimos
+
+        /**
+         * Vamos a retroceder las celdas en caso de que haya más de dos horas seguidas, mientras que la hora de arriba
+         * tenga la misma información que la hora actual (y también, mientras no intentemos regresar más de la cuenta
+         * y sacar horas que no existan)
+         */
+        while (
+          numeroCelda >= count * 5 &&
+          _cells[numeroCelda - count * 5].textContent === cell.textContent
+        ) {
+          prevCell = _cells[numeroCelda - count * 5]; // Guardamos la última hora que tiene la misma info
+          count++; // Tratamos de regresar otra hora más
+        }
+
+        // Si existe una celda anterior con la info exactamente igual
+        if (prevCell) {
+          prevCell.rowSpan++; // La hora anterior la extendemos una celda más abajo
+          cell.classList.add("hidden"); // Ocultamos la celda actual
+        }
+      }
 
       // pasamos a la siguiente celda
       numeroCelda++;

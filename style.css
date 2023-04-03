@@ -164,6 +164,8 @@ h2,
   border: var(--color-black) 4px solid;
   border-radius: 3px;
   background-color: var(--color-secondary);
+
+  table-layout: fixed;
 }
 
 /* ######################### ABSOLUTAMENTE TODO LO QUE ESTE DENTRO */
@@ -181,18 +183,23 @@ h2,
   border: var(--color-table-border-head) solid 2px;
 
   font-size: 1.5rem;
+  height: 2.5rem;
 }
 
 /* ######################### TODAS LAS CELDAS */
 #schedule td {
   background-color: var(--color-table-bg-cell);
   border: var(--color-table-border-cell) solid 2px;
+  width: 18%;
+  height: 5rem;
+  overflow: hidden;
 }
 
 /* ######################### LA PRIMERA COLUMNA (HORAS) */
 #schedule tr > td:first-child {
   background-color: var(--color-table-bg-column);
   border: var(--color-table-border-column) solid 2px;
+  width: 10%; /* Las horas van a estar más pequeño de lo normal */
 }
 
 /* ######################### HACER HOVER SOBRE UNA FILA */
@@ -330,6 +337,7 @@ footer,
   margin: auto auto;
   background-color: var(--color-primary);
   z-index: 10;
+  border-radius: 16px;
 }
 
 /* ######################### POPUP TEXT ######################### */

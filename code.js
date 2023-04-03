@@ -456,8 +456,8 @@ async function getHorario() {
                 "Información de la clase seleccionada",
                 {
                   Asignatura: materia,
-                  Grupo: profe,
-                  Maestro: grupo,
+                  Grupo: grupo,
+                  Maestro: profe,
                   Horario: `${encabezado} a las ${hour + 7}:00 - ${
                     hour + 7 + cell.rowSpan - 1
                   }:55`,

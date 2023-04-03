@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div id="popup" class="hidden">
+      <div id="popup-background"></div>
+      <div id="popup-dialog">
+        <div id="popup-content">Este es un cuadro emergente popup</div>
+
+        <button id="popup-button">Aceptar</button>
+      </div>
+    </div>
+
     <header>Agenda de uso del Laboratorio Central de Redes (LCR)</header>
 
     <h1>
@@ -35,12 +44,16 @@
           <label for="search-Maestro">Maestro: </label>
           <input disabled id="search-Maestro" placeholder="<Vacío>" />
         </div>
+
+        <div>
+          <button id="search-Limpiar">Limpiar</button>
+        </div>
       </div>
     </h1>
 
     <table id="schedule"></table>
 
-    <div id="info" style="display: none">
+    <div id="info" class="hidden">
       <div class="subtitle">Información de la clase seleccionada</div>
 
       <div id="admin">
@@ -67,7 +80,9 @@
       </div>
     </div>
 
-    <footer class="as-header"></footer>
+    <footer class="as-footer">
+      <a id="toggle">Acceder</a>
+    </footer>
 
     <script src="code.js"></script>
   </body>

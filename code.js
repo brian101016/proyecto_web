@@ -145,6 +145,25 @@ var _input = {
   },
 };
 
+// ========================= POPUP =========================
+/**
+ * Guardamos la información con respecto al popup, tanto el elemento principal, como el contenido y botón de cierre
+ */
+var _popup = {
+  /**
+   * @type {HTMLDivElement} Guardamos el elemento principal del popup para mostarlo y ocultarlo
+   */
+  main: null,
+  /**
+   * @type {HTMLDivElement} Guardamos el elemento contenedor para meterle información, datos y cualquier cosa
+   */
+  content: null,
+  /**
+   * @type {HTMLButtonElement} Guardamos el botón de 'Aceptar' para que el popup pueda ejecutar acciones especiales
+   */
+  button: null,
+};
+
 // ========================= MISCELÁNEOS =========================
 /**
  * Guardamos la información referente a la última celda que se hizo clic, para saber dónde modificar los datos y eso.
@@ -168,6 +187,13 @@ var _current = {
  * @type {HTMLTableCellElement[]} Guardar todas las celdas de la tabla para actualizar su valor rápidamente.
  */
 var _cells = [];
+/**
+ * Variable que nos dice si el usuario es admin o no, de momento se va a encender y apagar con los controles, pero se
+ * necesita de una verificación al servidor, para saber si es admin o no (le mandas la contraseña y te responde 0 o 1).
+ * Esta variable se puede activar desde el inspeccionar de google, pero la comprobación de actualizar el server todavía
+ * requiere de la contraseña nuevamente, y eso si no se puede inspeccionar.
+ */
+var _admin = false;
 
 // ################################################## INICIO ##################################################
 /**
@@ -240,6 +266,37 @@ document.addEventListener("DOMContentLoaded", () => {
     _horario.dias[_current.day][_current.pos] = celldata;
 
     refresh();
+  };
+
+  // ========================= POPUP =========================
+  _popup.main = document.getElementById("popup");
+  _popup.content = document.getElementById("popup-content");
+  _popup.button = document.getElementById("popup-button");
+  /**
+   * El background solo lo usamos una vez. Vamos a hacer que cuando se haga click en el fondo oscuro del popup se
+   * oculte el cuadro (como si quisieras salirte de la acción). Hacemos porque es intuitivo pensar que hacer click
+   * afuera del sitio nos saca, y para que no estemos forzados a mandar información por el cuadro de diálogo.
+   * Si queremos mostrar de nuevo el popup, necesariamente necesitamos reiniciar toda la información (función 'popup')
+   */
+  const _popup_background = document.getElementById("popup-background");
+  _popup_background.onclick = (e) => _popup.main.classList.add("hidden");
+
+  // ========================= TOGGLE ADMIN =========================
+  /**
+   * Este va a ser el link que nos permita acceder o salir del admin, de momento no está activo y lo único que hace
+   * es activar o desactivar el admin con cada click.
+   */
+  const toggle = document.getElementById("toggle");
+  toggle.onclick = () => {
+    _admin = !_admin; // Invertimos el admin, si era 'false' ahora es 'true' y viceversa
+
+    if (_admin) {
+      toggle.textContent = "Admin activado. Pulse para desactivar";
+      obj_info.classList.remove("hidden"); // Hacemos que los controles sean visibles
+    } else {
+      toggle.textContent = "Admin desactivado. Pulse para activar";
+      obj_info.classList.add("hidden"); // Hacemos que los controles sean invisibles
+    }
   };
 
   // Con todas las variables establecidas, ahora si comenzamos con el proceso de verdad
@@ -373,13 +430,40 @@ async function getHorario() {
           _current.pos = hour;
           _current.cell.classList.add("selected-cell"); // Activamos esta nueva celda
 
-          obj_info.style.display = ""; // Hacemos que los controles sean visibles
+          // Si no somos admin, mostramos el popup
+          if (!_admin) {
+            // Extraemos la información de la misma forma que hacemos en 'refresh'
+            const data = _horario.dias[encabezado][hour];
+            const materia = _horario.campos.Asignatura[data.Asignatura] || "";
+            const profe = _horario.campos.Maestro[data.Maestro] || "";
+            const grupo = data.Grupo > 0 ? data.Grupo : "";
 
-          // Ponemos los datos de la celda en los controles de admin
-          for (const field in _input.admin) {
-            _input.admin[field].value = _horario.dias[encabezado][hour][field];
-            _input.admin[field].selectedIndex =
-              _horario.dias[encabezado][hour][field] + 1;
+            // Mostramos el popup si es que hay información a mostrar, sino pues no hacemos nada
+            if (materia) {
+              popup(
+                "Información de la clase seleccionada",
+                {
+                  Asignatura: materia,
+                  Grupo: profe,
+                  Maestro: grupo,
+                  Horario: `${encabezado} a las ${hour + 7}:00 - ${
+                    hour + 7
+                  }:55`,
+                },
+                undefined,
+                "Cerrar"
+              );
+            } else {
+              // NOTA: Se podría poner un ELSE para que muestre un popup de que "Esta clase está desocupada".
+            }
+          } else {
+            // Si somos admin, ponemos los datos de la celda en los controles de admin
+            for (const field in _input.admin) {
+              _input.admin[field].value =
+                _horario.dias[encabezado][hour][field];
+              _input.admin[field].selectedIndex =
+                _horario.dias[encabezado][hour][field] + 1;
+            }
           }
         };
 
@@ -688,11 +772,111 @@ function buscar() {
   }
 }
 
+// ################################################## POPUP ##################################################
+/**
+ * Con esta función vamos a poder mostrar el popup en pantalla siempre que queramos. Con una descripción, información
+ * enlistada, serie de inputs para cualquier cosa y hasta un callback personalizado con el botón aceptar. Ningún parámetro
+ * es necesario.
+ *
+ * @param {string | undefined} desc Descripción del popup, cualquier tipo de texto válido. Es lo primero que se muestra.
+ *
+ * @param {object | undefined} listData Objeto con la información a mostrar en forma de lista. Por ejemplo, si le pasamos
+ * un objeto como { maestro: "Jalil", grupo: 32, materia: "Redes" }, entonces va a mostrar una lista de elementos
+ * a modo de:
+ * - maestro: Jalil
+ * - grupo: 32
+ * - materia: Redes
+ *
+ * @param {object | undefined} inputData Objeto con la información a recuperar del input. Es similar al `listData`.
+ * Por cada propiedad del objeto se va a crear un input para el cual ingresar datos, si dicha propiedad ya tiene algún
+ * valor 'string', entonces ese valor se va a poner en el input como default (autocompletado).
+ *
+ * @param {string | undefined} buttonDesc Texto que se muestra dentro del botón del popup. El default es "Aceptar".
+ *
+ * @param {() => {} | undefined} callback Representa una función/serie de instrucciones a realizar cuando se pulse el
+ * botón de 'Aceptar'. En caso de que existan inputs, los valores de los inputs se van a pasar como parametro del
+ * callback como si fuera el objeto 'inputData', pero con los valores actualizados.
+ */
+function popup(desc, listData, inputData, buttonDesc, callback) {
+  // ========================= REINICIAR POPUP =========================
+  // Reiniciamos las cosas, primero necesitamos borrar todo lo de 'popup-content'
+  _popup.content.replaceChildren();
+  // Cambiamos el contenido del botón del popup y lo rehabilitamos en caso de que no esté activo.
+  _popup.button.textContent = buttonDesc || "Aceptar"; // Default
+  _popup.button.disabled = false;
+
+  // ========================= DESCRIPCIÓN DEL POPUP =========================
+  // Después, agregamos la descripción del popup
+  const p = document.createElement("p");
+  p.textContent = desc || "Hola mundo!"; // Texto default
+  _popup.content.appendChild(p); // Guardamos
+
+  // ========================= LISTA DE DATOS =========================
+  const ul = document.createElement("ul");
+  // En caso de que sea 'undefined' pues sencillamente no hace nada y ya
+  for (const prop in listData) {
+    const li = document.createElement("li"); // Creamos el elemento de lista
+    const title = document.createElement("b"); // Creamos el título en negritas
+    title.textContent = prop + ": "; // Le agregamos el nombre de la propiedad 'prop'
+    li.append(title, listData[prop].toString()); // Agregamos tanto el título como el contenido (con .toString por si acaso)
+
+    ul.appendChild(li); // Guardamos el elemento en la lista y repetimos
+  }
+  _popup.content.appendChild(ul); // Guardamos
+
+  // ========================= LISTA DE INPUTS =========================
+  const ul2 = document.createElement("ul");
+  // En caso de que sea 'undefined' pues sencillamente no hace nada y ya
+  for (const prop in inputData) {
+    const li = document.createElement("li"); // Creamos el elemento de lista
+    const label = document.createElement("label"); // Creamos la etiqueta correspondiente
+    label.textContent = prop + ": "; // Le agregamos el nombre de la propiedad 'prop'
+    label.htmlFor = "popup-input-" + prop; // Le ponemos una ID personalizada
+
+    const input = document.createElement("input"); // Creamos el input
+    input.value = inputData[prop].toString(); // Guardamos la info default dentro del input (con .toString por si acaso)
+    input.id = "popup-input-" + prop; // Le ponemos una ID personalizada
+
+    /**
+     * Podríamos guardar los inputs en un arreglo, pero también podemos hacer que los inputs modifiquen en casi
+     * tiempo real los valores del objeto 'inputData'. Así podemos mandar la info directamente sin necesidad de volver
+     * a buscar dentro de los inputs a cada rato.
+     */
+    input.onchange = (e) => (inputData[prop] = e.target.value);
+
+    li.append(label, input); // Guardamos todo en el elemento de lista
+    ul2.appendChild(li); // Guardamos el elemento en la lista y repetimos
+  }
+  _popup.content.appendChild(ul2); // Guardamos
+
+  // ========================= BOTON DE ACEPTAR =========================
+  _popup.button.onclick = async (e) => {
+    _popup.button.textContent = "En proceso..."; // Mostramos info de que se está ejecutando el código
+    _popup.button.disabled = true; // Deshabilitamos el botón para que no se hagan muchos clicks
+
+    // Ejecutamos el callback (si existe) y le pasamos el 'inputData' como parámetro
+    if (callback) {
+      try {
+        await callback(inputData); // En caso de que el callback sea asíncrono, lo esperamos
+      } catch (error) {
+        console.error("Error in popup event: ", error);
+      }
+    }
+
+    // Cuando termine el callback ocultamos el popup y eliminamos el click del botón por si acaso.
+    _popup.button.onclick = (e) => console.log("disabled!");
+    _popup.main.classList.add("hidden");
+  };
+
+  // ========================= MOSTRAR POPUP =========================
+  // Mostramos el popup, le quitamos la clase 'hidden'
+  _popup.main.classList.remove("hidden");
+}
+
 /*
   TODO:
 
   1.- FORMA DE ACCEDER AL ADMIN
-  2.- POPUP CUANDO NO ERES ADMIN Y HACES CLIC SOBRE UNA CELDA
   3.- DESDE EL ADMIN, SUBIR LOS CAMBIOS AL SERVIDOR (PROBAR SI FUNCIONA)
   4.- BOTON DE LIMPIAR BUSQUEDA
 

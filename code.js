@@ -1,6 +1,6 @@
 // ################################################## URLS ##################################################
-const url = "http://127.0.0.1:3000/Horario";
-// const url = "http://172.16.16.16:3000/Horario";
+const url = "http://127.0.0.1:3000/";
+// const url = "http://172.16.16.16:3000/";
 (""); // Esto es nada más para que no se junten los comentarios, no hace nada en el código
 
 // ################################################## VARIABLES ##################################################
@@ -293,19 +293,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ========================= TOGGLE ADMIN =========================
   /**
-   * Este va a ser el link que nos permita acceder o salir del admin, de momento no está activo y lo único que hace
-   * es activar o desactivar el admin con cada click.
+   * Este link es el encargado de "iniciar sesión como admin", para esto vamos a mostrar un popup que solicite una
+   * contraseña y le pregunte al servidor (si es que está activo) si es válida o no, entonces el servidor va a
+   * regresar un valor de verdadero o falso y con eso activamos o desactivamos el admin.
+   *
+   * Como admins vamos a poder modificar la información del horario como si fuera un CRUD, modificando también
+   * los profesores y asignaturas que aparecen. Finalmente, vamos a mostrar también un botón de guardar cambios
+   * para mandar la info modificada al server y que ahí se guarde (y vamos a pedir la contraseña nuevamente como
+   * medida de seguridad extra y confirmación)
    */
   const toggle = document.getElementById("toggle");
   toggle.onclick = () => {
-    _admin = !_admin; // Invertimos el admin, si era 'false' ahora es 'true' y viceversa
-
+    // Si la sesión de admin está activa, sencillamente la desactivamos
     if (_admin) {
-      toggle.textContent = "Admin activado. Pulse para desactivar";
-      obj_info.classList.remove("hidden"); // Hacemos que los controles sean visibles
-    } else {
-      toggle.textContent = "Admin desactivado. Pulse para activar";
+      _admin = false;
+      toggle.textContent = "Acceder";
       obj_info.classList.add("hidden"); // Hacemos que los controles sean invisibles
+    } else {
+      // Si el admin está desactivado, vamos a mostrar el popup y pedir la contraseña
+
+      // Creamos una función para mostrar el PopUp una y otra vez siempre que la contraseña sea incorrecta
+      const passPopUp = (err) => {
+        popup(
+          err
+            ? "Contraseña incorrecta, intente de nuevo: "
+            : "Ingrese la contraseña para acceder: ",
+          null,
+          { Contraseña: "" },
+          "Acceder",
+          async ({ Contraseña }) => {
+            const resp = await fetch(url + "admin", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ password: Contraseña }),
+            });
+
+            if (resp.status === 200) {
+              _admin = true;
+              toggle.textContent = "Cerrar sesión";
+              obj_info.classList.remove("hidden"); // Hacemos que los controles sean visibles
+              popup("Contraseña correcta"); // PopUp de confirmación
+            } else passPopUp(true); // Repetimos esta función marcando un error
+          },
+          true
+        );
+      };
+
+      passPopUp(false); // Ejecutamos por primera vez
     }
 
     refresh(); // Refrescamos para que las celdas se combinen o separen
@@ -341,7 +377,7 @@ async function getHorario() {
    */
   try {
     // Vamos a pedirle al servidor original que traiga la información
-    response = await fetch(url);
+    response = await fetch(url + "horario");
   } catch (error) {
     // El servidor original no está disponible
     console.log(error);
@@ -507,7 +543,7 @@ async function setHorario(password) {
 
   // Intentamos acceder al servidor, las opciones son para hacer la solicitud
   try {
-    response = await fetch(url, {
+    response = await fetch(url + "horario", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -861,8 +897,12 @@ function buscar() {
  * @param {() => {} | undefined} callback Representa una función/serie de instrucciones a realizar cuando se pulse el
  * botón de 'Aceptar'. En caso de que existan inputs, los valores de los inputs se van a pasar como parametro del
  * callback como si fuera el objeto 'inputData', pero con los valores actualizados.
+ *
+ * @param {boolean | undefined} repeat Significa si el PopUp debería permanecer abierto después del callback, en caso
+ * de que el mismo callback genere otro PopUp o modifique su información. Por default es falso, y esto evita que el
+ * botón de "Aceptar" cierre el PopUp (aunque seguirá ocultándose siempre que se haga clic fuera de él).
  */
-function popup(desc, listData, inputData, buttonDesc, callback) {
+function popup(desc, listData, inputData, buttonDesc, callback, repeat) {
   // ========================= REINICIAR POPUP =========================
   // Reiniciamos las cosas, primero necesitamos borrar todo lo de 'popup-content'
   _popup.content.replaceChildren();
@@ -928,9 +968,11 @@ function popup(desc, listData, inputData, buttonDesc, callback) {
       }
     }
 
-    // Cuando termine el callback ocultamos el popup y eliminamos el click del botón por si acaso.
-    _popup.button.onclick = (e) => console.log("disabled!");
-    _popup.main.classList.add("hidden");
+    // Cuando termine el callback ocultamos el popup y eliminamos el click del botón por si acaso (solo si no hay repeat)
+    if (!repeat) {
+      _popup.button.onclick = () => console.log("disabled!");
+      _popup.main.classList.add("hidden");
+    }
   };
 
   // ========================= MOSTRAR POPUP =========================

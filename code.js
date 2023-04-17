@@ -322,20 +322,27 @@ document.addEventListener("DOMContentLoaded", () => {
           { Contraseña: "" },
           "Acceder",
           async ({ Contraseña }) => {
-            const resp = await fetch(url + "admin", {
+            await fetch(url + "admin", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({ password: Contraseña }),
-            });
-
-            if (resp.status === 200) {
-              _admin = true;
-              toggle.textContent = "Cerrar sesión";
-              obj_info.classList.remove("hidden"); // Hacemos que los controles sean visibles
-              popup("Contraseña correcta"); // PopUp de confirmación
-            } else passPopUp(true); // Repetimos esta función marcando un error
+            })
+              .then((resp) => {
+                if (resp.status === 200) {
+                  _admin = true;
+                  toggle.textContent = "Cerrar sesión";
+                  obj_info.classList.remove("hidden"); // Hacemos que los controles sean visibles
+                  refresh(); // Como es asíncrono, tenemos que volver a separar las celdas (porque no lo hizo rápido)
+                  popup("Contraseña correcta"); // PopUp de confirmación
+                } else passPopUp(true); // Repetimos esta función marcando un error
+              })
+              .catch(() => {
+                popup(
+                  "El servidor no está disponible, intente de nuevo más tarde."
+                );
+              });
           },
           true
         );

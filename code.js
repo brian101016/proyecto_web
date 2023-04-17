@@ -347,6 +347,29 @@ document.addEventListener("DOMContentLoaded", () => {
     refresh(); // Refrescamos para que las celdas se combinen o separen
   };
 
+  // ========================= EXECUTE CHANGES =========================
+  /**
+   * Este es el botón para subir los cambios al server, es como el para acceder al admin: vamos a mostrar un PopUp que
+   * pida la contraseña nuevamente para subir los cambios, y el servidor va a ser el encargado de verificarla y decir
+   * si está bien o está mal, pero nosotros aquí nada más le vamos a decir al server que lo intente.
+   */
+  const execute = document.getElementById("execute");
+  execute.onclick = () => {
+    popup(
+      "Ingrese la contraseña nuevamente para guardar los cambios:",
+      null,
+      { Contraseña: "" },
+      "Subir cambios",
+      async ({ Contraseña }) => {
+        // Vamos a usar la función de setHorario, y esperamos a ver qué nos dice
+        const message = await setHorario(Contraseña);
+        // Sea lo que sea que nos diga, vamos a mostrarlo en un PopUp nuevo
+        popup(message);
+      },
+      true
+    );
+  };
+
   // Con todas las variables establecidas, ahora si comenzamos con el proceso de verdad
   getHorario();
 });
@@ -537,6 +560,8 @@ async function getHorario() {
 /**
  * Agarra el Horario actual y se lo manda al servidor para ver si se puede actualizar la información
  * @param {string} password Contraseña para poder modificar la información desde el admin
+ *
+ * @returns { string } Regresa información sobre la petición con un mensaje de estado de si funcionó o no
  */
 async function setHorario(password) {
   let response;
@@ -554,17 +579,11 @@ async function setHorario(password) {
       }),
     });
   } catch (error) {
-    console.log(error);
-    obj_schedule.textContent = "No se pudo conectar al servidor...";
-    return; // El servidor no está disponible
+    return "No se pudo conectar al servidor..."; // El servidor no está disponible
   }
 
-  // El servidor si está disponible, pero tal vez no pasamos la contraseña correcta
-  if (response.ok) {
-    console.log("La información se actualizó con éxito!");
-  } else {
-    console.log("Error " + response.status);
-  }
+  // Si llegamos aquí significa que el servidor si existe, y esto nos dirá qué ocurrió con lo que enviamos de info
+  return await response.json();
 }
 
 // ################################################## PARSE NUMBER ##################################################

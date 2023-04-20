@@ -648,7 +648,7 @@ function refresh() {
       cell.classList.remove("hidden"); // ...y esto también
 
       // Anotamos como texto dentro de la celda actual, en caso de que todo esté vacío ("") pues no va a mostrar nada
-      cell.textContent = `${materia} ${grupo} ${profe}`;
+      cell.textContent = `${materia}\n${grupo}\n${profe}`;
 
       // ========================= COMBINAMOS CELDAS IGUALES EN VERTICAL =========================
       /**
@@ -975,6 +975,14 @@ function popup(desc, listData, inputData, buttonDesc, callback, repeat) {
      */
     input.onchange = (e) => (inputData[prop] = e.target.value);
 
+    /**
+     * Esto lo que va a hacer es que cuando pulsemos enter en algún input del PopUp, se haga click en el botón principal para "enviar". Esto es principalmente
+     * como calidad de vida porque es más sencillo pulsar enter después de escribir una contraseña que mover el cursor (y la contraseña se usa bastante).
+     */
+    input.onkeyup = (e) => {
+      if (e.key === "Enter") _popup.button.onclick();
+    };
+
     li.append(label, input); // Guardamos todo en el elemento de lista
     ul2.appendChild(li); // Guardamos el elemento en la lista y repetimos
   }
@@ -1005,11 +1013,3 @@ function popup(desc, listData, inputData, buttonDesc, callback, repeat) {
   // Mostramos el popup, le quitamos la clase 'hidden'
   _popup.main.classList.remove("hidden");
 }
-
-/*
-  TODO:
-
-  1.- FORMA DE ACCEDER AL ADMIN
-  3.- DESDE EL ADMIN, SUBIR LOS CAMBIOS AL SERVIDOR (PROBAR SI FUNCIONA)
-
-*/

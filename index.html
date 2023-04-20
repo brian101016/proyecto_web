@@ -14,15 +14,17 @@
       <div id="popup-dialog">
         <div id="popup-content">Este es un cuadro emergente popup</div>
 
-        <button id="popup-button">Aceptar</button>
+        <button id="popup-button" class="secondary">Aceptar</button>
       </div>
     </div>
 
-    <header>Agenda de uso del Laboratorio Central de Redes (LCR)</header>
+    <div class="header">
+      Agenda de uso del Laboratorio Central de Redes (LCR)
+    </div>
 
-    <h1>
-      Busqueda personalizada
-      <div id="search">
+    <div class="pill-primary">
+      <div class="title-1">Búsqueda personalizada</div>
+      <div id="search" class="controls-bar">
         <div>
           <label for="search-Asignatura">Asignatura: </label>
           <input disabled id="search-Asignatura" placeholder="<Vacío>" />
@@ -49,44 +51,51 @@
           <button id="search-Limpiar">Limpiar</button>
         </div>
       </div>
-    </h1>
+    </div>
 
     <table id="schedule"></table>
 
-    <div id="info" class="hidden">
-      <div class="subtitle">Información de la clase seleccionada</div>
+    <div id="info" class="pill-secondary hsidden">
+      <div class="title-2">Información de la clase seleccionada</div>
 
-      <div id="admin">
-        <label for="admin-Asignatura">Asignatura: </label>
-        <select id="admin-Asignatura" placeholder="<Vacío>"></select>
-
-        <label for="admin-Grupo">Grupo: </label>
-        <input
-          id="admin-Grupo"
-          type="number"
-          min="0"
-          max="99"
-          placeholder="<Vacío>"
-        />
-
-        <label for="admin-Maestro">Maestro: </label>
-        <select id="admin-Maestro" placeholder="<Vacío>"></select>
-      </div>
-
-      <div id="edit-tools">
+      <div id="admin" class="controls-bar">
         <div>
-          <button id="Actualizar">Actualizar</button>
-          <button id="execute">Subir cambios</button>
+          <label for="admin-Asignatura">Asignatura: </label>
+          <select id="admin-Asignatura" placeholder="<Vacío>"></select>
         </div>
 
+        <div>
+          <label for="admin-Grupo">Grupo: </label>
+          <input
+            id="admin-Grupo"
+            type="number"
+            min="0"
+            max="99"
+            placeholder="<Vacío>"
+          />
+        </div>
+
+        <div>
+          <label for="admin-Maestro">Maestro: </label>
+          <select id="admin-Maestro" placeholder="<Vacío>"></select>
+        </div>
+      </div>
+
+      <div id="edit-tools" class="controls-bar">
         <ol id="edit-Asignatura"></ol>
+
+        <div class="controls-bar vertical" style="align-self: normal">
+          <button id="Actualizar">Actualizar</button>
+          <button id="execute" class="secondary">Subir cambios</button>
+        </div>
+
         <ol id="edit-Maestro"></ol>
       </div>
     </div>
 
-    <footer class="as-footer">
-      <a id="toggle">Acceder</a>
-    </footer>
+    <div class="footer">
+      <button id="toggle" class="secondary">Acceder</button>
+    </div>
 
     <script src="code.js"></script>
   </body>

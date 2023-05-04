@@ -20,82 +20,86 @@
 
     <div class="header">
       Agenda de uso del Laboratorio Central de Redes (LCR)
-    </div>
-
-    <div class="pill-primary">
-      <div class="title-1">Búsqueda personalizada</div>
-      <div id="search" class="controls-bar">
-        <div>
-          <label for="search-Asignatura">Asignatura: </label>
-          <input disabled id="search-Asignatura" placeholder="<Vacío>" />
-        </div>
-
-        <div>
-          <label for="search-Grupo">Grupo: </label>
-          <input
-            disabled
-            id="search-Grupo"
-            type="number"
-            min="0"
-            max="99"
-            placeholder="<Vacío>"
-          />
-        </div>
-
-        <div>
-          <label for="search-Maestro">Maestro: </label>
-          <input disabled id="search-Maestro" placeholder="<Vacío>" />
-        </div>
-
-        <div>
-          <button id="search-Limpiar">Limpiar</button>
-        </div>
-      </div>
-    </div>
-
-    <table id="schedule"></table>
-
-    <div id="info" class="pill-secondary hsidden">
-      <div class="title-2">Información de la clase seleccionada</div>
-
-      <div id="admin" class="controls-bar">
-        <div>
-          <label for="admin-Asignatura">Asignatura: </label>
-          <select id="admin-Asignatura" placeholder="<Vacío>"></select>
-        </div>
-
-        <div>
-          <label for="admin-Grupo">Grupo: </label>
-          <input
-            id="admin-Grupo"
-            type="number"
-            min="0"
-            max="99"
-            placeholder="<Vacío>"
-          />
-        </div>
-
-        <div>
-          <label for="admin-Maestro">Maestro: </label>
-          <select id="admin-Maestro" placeholder="<Vacío>"></select>
-        </div>
-      </div>
-
-      <div id="edit-tools" class="controls-bar">
-        <ol id="edit-Asignatura"></ol>
-
-        <div class="controls-bar vertical" style="align-self: normal">
-          <button id="Actualizar">Actualizar</button>
-          <button id="execute" class="secondary">Subir cambios</button>
-        </div>
-
-        <ol id="edit-Maestro"></ol>
-      </div>
-    </div>
-
-    <div class="footer">
       <button id="toggle" class="secondary">Acceder</button>
     </div>
+
+    <div class="wrap">
+      <div class="sidebar">
+        <button
+          class="secondary"
+          onclick="document.getElementById('toggle').click()"
+        >
+          Acceder
+        </button>
+        <button onclick="window.print()">Imprimir</button>
+      </div>
+
+      <div class="content">
+        <div class="pill-primary">
+          <div class="title-1">Búsqueda personalizada</div>
+          <div id="search" class="controls-bar">
+            <div>
+              <label for="search-Asignatura">Asignatura: </label>
+              <input disabled id="search-Asignatura" placeholder="<Vacío>" />
+            </div>
+            <div>
+              <label for="search-Grupo">Grupo: </label>
+              <input
+                disabled
+                id="search-Grupo"
+                type="number"
+                min="0"
+                max="99"
+                placeholder="<Vacío>"
+              />
+            </div>
+            <div>
+              <label for="search-Maestro">Maestro: </label>
+              <input disabled id="search-Maestro" placeholder="<Vacío>" />
+            </div>
+            <div>
+              <button id="search-Limpiar">Limpiar</button>
+            </div>
+          </div>
+        </div>
+
+        <table id="schedule"></table>
+
+        <div id="info" class="pill-secondary hidden">
+          <div class="title-2">Información de la clase seleccionada</div>
+          <div id="admin" class="controls-bar">
+            <div>
+              <label for="admin-Asignatura">Asignatura: </label>
+              <select id="admin-Asignatura" placeholder="<Vacío>"></select>
+            </div>
+            <div>
+              <label for="admin-Grupo">Grupo: </label>
+              <input
+                id="admin-Grupo"
+                type="number"
+                min="0"
+                max="99"
+                placeholder="<Vacío>"
+              />
+            </div>
+            <div>
+              <label for="admin-Maestro">Maestro: </label>
+              <select id="admin-Maestro" placeholder="<Vacío>"></select>
+            </div>
+          </div>
+          <div id="edit-tools" class="controls-bar">
+            <ol id="edit-Asignatura"></ol>
+            <div class="controls-bar vertical" style="align-self: normal">
+              <button id="Actualizar">Actualizar</button>
+              <button id="execute" class="secondary">Subir cambios</button>
+            </div>
+            <ol id="edit-Maestro"></ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer"></div>
 
     <script src="code.js"></script>
   </body>

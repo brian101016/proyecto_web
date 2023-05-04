@@ -65,6 +65,9 @@ body {
   color: var(--color-black);
   font-family: "Kreon", Arial, Helvetica, sans-serif, serif;
   background-color: var(--color-white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ################################################## TITLES ################################################## */
@@ -80,6 +83,9 @@ body {
   background-image: url(./LogoFondoBlanco.jpg);
   background-size: contain;
   background-repeat: no-repeat;
+  position: sticky;
+  top: 0%;
+  min-height: 3rem;
 }
 
 .footer {
@@ -87,6 +93,7 @@ body {
   margin-top: auto;
   font-size: 1rem;
   text-align: left;
+  position: initial;
 }
 
 /* ------------------------- TITLE 1 */
@@ -104,6 +111,24 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-black);
+}
+
+.wrap {
+  display: flex;
+  width: 100%;
+}
+
+.sidebar {
+  width: 14%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-tertiary);
+  align-items: center;
+  padding: 2em 0;
+}
+
+.sidebar > * {
+  margin: 1rem 0;
 }
 
 /* ################################################## PILLS ################################################## */
@@ -191,6 +216,13 @@ button:active {
 .secondary {
   border-color: var(--color-secondary);
   color: var(--color-secondary);
+}
+
+#toggle {
+  position: absolute;
+  font-size: 1.25rem;
+  right: 2.5%;
+  top: 20%;
 }
 
 /* ------------------------- BUTTON SECONDARY HOVER */
@@ -457,7 +489,9 @@ Full HD Screen (i.e. laptop) |	1920px	   |    4096px    |
   #info,
   .pill-primary,
   .pill-secondary,
-  .footer {
+  .footer,
+  #toggle,
+  .sidebar {
     visibility: hidden !important;
     display: none !important;
   }
@@ -467,6 +501,7 @@ Full HD Screen (i.e. laptop) |	1920px	   |    4096px    |
     font-size: 24px;
     padding: 12px;
     text-align: center;
+    position: initial;
   }
 
   /* ------------------------- TODOS LOS ELEMENTOS */

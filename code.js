@@ -1,5 +1,6 @@
 // ################################################## URLS ##################################################
-const url = "http://127.0.0.1:3000/";
+const url = "http://horario.api:8000/";
+// const url = "http://127.0.0.1:3000/";
 // const url = "http://172.16.16.16:3000/";
 (""); // Esto es nada más para que no se junten los comentarios, no hace nada en el código
 
@@ -590,7 +591,11 @@ async function setHorario(password) {
   }
 
   // Si llegamos aquí significa que el servidor si existe, y esto nos dirá qué ocurrió con lo que enviamos de info
-  return await response.json();
+  try {
+    return await response.json();
+  } catch (err) {
+    return response.statusText || "Error inesperado";
+  }
 }
 
 // ################################################## PARSE NUMBER ##################################################

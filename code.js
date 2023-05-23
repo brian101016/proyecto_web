@@ -1,8 +1,8 @@
 // ################################################## URLS ##################################################
-// const url = "http://horario.api:8000/";
+const url = "http://horario.api:8000/";
 // const url = "http://127.0.0.1:3000/";
 // const url = "http://192.168.8.9:9000/.netlify/functions/api/";
-const url = "https://horario-ues-api.netlify.app/.netlify/functions/api/";
+// const url = "https://horario-ues-api.netlify.app/.netlify/functions/api/";
 // const url = "http://172.16.16.16:3000/";
 (""); // Esto es nada más para que no se junten los comentarios, no hace nada en el código
 

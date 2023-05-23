@@ -463,8 +463,26 @@ ol {
     font-size: 11.5px;
   }
 
+  .wrap {
+    overflow: auto;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .header {
+    position: initial;
+    background-image: none;
+  }
+
+  .header > button {
+    top: unset !important;
+  }
+
   .controls-bar {
     flex-wrap: wrap;
+    flex-direction: column;
   }
 }
 @media screen and (max-width: 300px) {
